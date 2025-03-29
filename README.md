@@ -153,4 +153,3 @@ The filter handles date input in both BR (`d/m/Y`) and EN (`m/d/Y`) formats auto
 ## 📖 License
 
 MIT © TecnoCampos
-```
