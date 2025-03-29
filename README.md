@@ -150,6 +150,43 @@ The filter handles date input in both BR (`d/m/Y`) and EN (`m/d/Y`) formats auto
 
 ---
 
+## 🤝 Contributing
+
+Contributions are welcome! If you find a bug or have an idea for an improvement, feel free to open an issue or submit a pull request.
+
+### How to Contribute
+
+1. **Fork** this repository
+2. **Clone** your fork:
+
+```bash
+git clone https://github.com/your-username/dynamic-model-filter.git
+```
+
+3. **Create a new branch** for your changes:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+4. **Make your changes** and commit:
+
+```bash
+git commit -m "Add feature: your description"
+```
+
+5. **Push** to your fork:
+
+```bash
+git push origin feature/your-feature-name
+```
+
+6. **Open a Pull Request** to the `main` branch of this repository
+
+Please ensure your code follows Laravel conventions and includes relevant tests if applicable.
+
+---
+
 ## 📖 License
 
 MIT © TecnoCampos
