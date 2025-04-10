@@ -28,12 +28,12 @@ trait FilterRequestScope
                         break;
 
                     case 'between':
-                        [$position, $column, $source] = array_pad(explode('|', $options), 3, null);
+                        [$position, $column] = array_pad(explode('|', $options), 3, null);
                         $operator = $position == 'first' ? '>=' : '<=';
-                        $column = explode(':', $column)[1];
 
-                        if ($source != null && str_contains($source, 'request')) {
-                            [$request, $typeData] = explode(':', $source);
+                        if ($column != null && str_contains($column, 'request')) {
+                            $request = $this->removeColon($column);
+
                             $column = $requestData[$request]??null;
                             if (empty($column)) {
                                 break;
@@ -54,6 +54,7 @@ trait FilterRequestScope
                             }
                         }
 
+                        $column = $this->removeColon($column);
                         $date = $this->convertDate($value);
                         $query->whereDate($column, $operator, $date);
                         break;
@@ -68,6 +69,9 @@ trait FilterRequestScope
                         $query->where($field, 'like', "%$value%");
                         break;
 
+                    case 'array':
+                        $query->whereIn($column, $value);
+
                     case 'multi':
                         [$typeSearch, $columns] = explode('|', $options);
                         $query = $this->multiQuery($query, $typeSearch, $columns, $value);
@@ -81,8 +85,9 @@ trait FilterRequestScope
 
     public function relationQuery($query, $relation, $column, $value, $type)
     {
-        $column = explode(':', $column)[1];
-        $type = explode(':', $type)[1];
+        $column = $this->removeColon($column);
+        $type = $this->removeColon($type);
+        $relation = $this->removeColon($relation);
 
         switch ($type) {
             case 'text':
@@ -102,6 +107,10 @@ trait FilterRequestScope
                 $query->whereHas($relation, fn($q) => $q->whereDate($column, $operator, $date));
                 break;
 
+            case 'array':
+                $query->whereHas($relation, fn($q) => $q->whereIn($column, $value));
+                break;
+
             case 'like':
                 $query->whereHas($relation, fn($q) => $q->where($column, 'like', "%$value%"));
                 break;
@@ -112,8 +121,8 @@ trait FilterRequestScope
 
     public function multiQuery($query, $type, $columns, $value)
     {
-        $arrayColumns = explode(',', explode(':', $columns)[1]);
-        $type = explode(':', $type)[1];
+        $arrayColumns = explode(',', $this->removeColon($columns));
+        $type = $this->removeColon($type);
 
         switch ($type) {
             case 'text':
@@ -159,6 +168,11 @@ trait FilterRequestScope
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function removeColon(string $string)
+    {
+        return str_contains($string, ':') ? explode(':', $string)[1] : $string;
     }
 
     public function getFilterRequest($query, array $requestData)
