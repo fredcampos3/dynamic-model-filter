@@ -98,42 +98,62 @@ public static array $filterRequest = [
 
 ---
 
-## 🖼 Blade Component (Form) (Optional)
+## 🖼 Blade Component (Form) – Optional UI Integration
 
-Use the built-in Blade component to render filters dynamically:
+You can use the <x-DMF::form /> component to render filter forms automatically based on a simple fields array.
 
-### Include:
+### Basic usage
 
 ```blade
-@include('dynamicfilters::components.filter-form', [
-  'filters' => [
-    'inputs' => [
-      'name' => 'type:text|id:name|placeholder:Name or Email...|label:Search',
-      'status' => "type:select|id:status|options:{\"0\":\"Active\",\"1\":\"Disabled\"}|placeholder:All|label:Status",
+<x-DMF::form :fields="[
+    'start_date' => ['type' => 'date', 'label' => __('Start Date')],
+    'end_date' => ['type' => 'date', 'label' => __('End Date')],
+    'status' => [
+        'type' => 'select',
+        'label' => __('Status'),
+        'data' => ['active' => 'Active', 'inactive' => 'Inactive'],
+        'attributes' => '',
+        'class' => 'form-select'
     ],
-    'action' => route('users.index'), // Optional
-    'method' => 'GET',
-  ]
-])
+]" />
 ```
 
-### Auto Features
-
-- Keeps values after submit.
-- Generates inputs based on type (`text`, `select`, `date`).
-- Supports `options:` for selects via JSON.
+- All submitted fields will persist values using request().
+- The component will auto-render the correct field types (text, select, date).
 
 ---
 
-## 🔧 Customizing
+### UI Templates
 
-You may override the default layout or logic by publishing the views:
+You can define which template is used (Bootstrap or Tailwind) via config:
+
+1. Set in .env:
 
 ```bash
-php artisan vendor:publish --tag=views
+DMF_TEMPLATE=bootstrap
 ```
 
-> Or modify the form component at `src/resources/views/components/filter-form.blade.php`
+2. Or override in config file config/dynamic-model-filter.php:
+
+```php
+return [
+  'template' => env('DMF_TEMPLATE', 'tailwind'), // or 'bootstrap'
+];
+```
+
+The component will automatically load one of the following views:
+
+- resources/views/components/bootstrap/filter-form.blade.php
+- resources/views/components/tailwind/filter-form.blade.php
+
+---
+
+### Dynamic behavior
+
+- size: sets the grid column width (1–12) for Bootstrap and Tailwind layouts
+- data: associative array for <select>
+- attributes: any custom HTML attributes (multiple, readonly, etc.)
+- class: additional CSS classes
 
 ---
 
@@ -146,7 +166,7 @@ The filter handles date input in both BR (`d/m/Y`) and EN (`m/d/Y`) formats auto
 ## ✅ Requirements
 
 - PHP 8.0+
-- Laravel 9+
+- Laravel 8+
 
 ---
 
@@ -160,7 +180,7 @@ Contributions are welcome! If you find a bug or have an idea for an improvement,
 2. **Clone** your fork:
 
 ```bash
-git clone https://github.com/your-username/dynamic-model-filter.git
+git clone https://github.com/fredcampos3/dynamic-model-filter.git
 ```
 
 3. **Create a new branch** for your changes:
