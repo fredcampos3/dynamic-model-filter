@@ -151,7 +151,7 @@ The component will automatically load one of the following views:
 ### Dynamic behavior
 
 - size: sets the grid column width (1–12) for Bootstrap and Tailwind layouts
-- data: associative array for <select>
+- data: associative array for select
 - attributes: any custom HTML attributes (multiple, readonly, etc.)
 - class: additional CSS classes
 
